@@ -18,15 +18,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="StreamCompaction.cu">
+    <ClCompile Include="CPUTimer.cpp">
       <Filter>Source Files</Filter>
-    </None>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StreamCompaction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CPUTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="StreamCompaction.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
