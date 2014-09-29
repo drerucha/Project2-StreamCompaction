@@ -131,3 +131,27 @@ project.  Like other projects, please open a pull request and email Harmony.
 
 # REFERENCES
 "Parallel Prefix Sum (Scan) with CUDA." GPU Gems 3.
+
+# RESULTS
+
+ I was able to successfully implement the parallel prefix sum algorithm using both global and shared memory. Unfortunately, my implementations appear to error once the size of the input array grows larger than a certain threshold. Currently, this threshold sits at around 6000 elements. As of the time of this writing, I have been unable to determine why my parallel scan implementations fail on large input arrays.
+
+ As a result of being unable to perform tests on very large input arrays, my data points for performance analysis are severely limited. GPUs are best suited for performing simple operations on large data sets--much larger than 6000 elements. With small input arrays (< 6000 elements), program execution time on the GPU can vary significantly between runs. Additionally, with small input arrays, the serial CPU implementation of an algorithm is often faster than the parallel GPU implementation of the same algorithm due to some overhead incurred when performing operations on the GPU. This is the case here. Since my tests were limited to small input arrays, the serial version of my parallel prefix sum algorithm consistently clocked in at 0ms--faster than its GPU counterparts. Of course, this could also be a shortcoming of the methods I used to time my CPU algorithms.
+
+ Here are a few data points comparing my serial scan, my naive parallel scan implemented that uses global memory exclusively, and my naive parallel scan that utilizes shared memory.
+
+ Number of elements in the input array | Scan method | Execution time (ms)
+:---: | :---: | :---:
+3000 | Serial | 0.0
+4000 | Serial | 0.0
+5000 | Serial | 0.0
+3000 | Parallel - Global | 0.183936
+4000 | Parallel - Global | 0.216736
+5000 | Parallel - Global | 0.273824
+3000 | Parallel - Shared | 0.13968
+4000 | Parallel - Shared | 0.153888
+5000 | Parallel - Shared | 0.177312
+
+Even using a limited number of test cases, it is easy to see that the parallel scan implementation that utilizes shared memory is more efficient than the parallel implementation that does not utilize shared memory. This is to be expected, as global memory calls are considered expensive to make within a GPU kernel. Reducing the number of accesses to global memory, and replacing them with shared memory accesses wherever possible, should therefore increase performance, which is shown to hold true in these test cases. As the number of elements in the input array increases, I expect this trend to continue, and the performance gap between the method using shared memory and the method using only global memory to grow.
+
+As the number of input elements increases, I also expect the parallel implementations of scan to overtake the serial implementation. After I locate the logic error in my parallel scan implementations, I will run additional tests to test the hypotheses I have stated here.
